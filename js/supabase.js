@@ -5,8 +5,8 @@
 // Find them at: https://supabase.com/dashboard → Project Settings → API
 // ════════════════════════════════════════
 
-const SUPABASE_URL  = 'https://YOUR_PROJECT_REF.supabase.co'; // ← REPLACE
-const SUPABASE_ANON = 'YOUR_ANON_PUBLIC_KEY_HERE';            // ← REPLACE
+const SUPABASE_URL  = 'https://hckapewgnlhbwdpiwnpe.supabase.co'; // ← REPLACE
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhja2FwZXdnbmxoYndkcGl3bnBlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI0MzM0MTcsImV4cCI6MjA4ODAwOTQxN30.f5STJrRGjpWlQqK7Clwb881wqoQXJ8-SAaIsMprDOro';            // ← REPLACE
 
 // ════════════════════════════════════════
 // DO NOT EDIT BELOW THIS LINE
