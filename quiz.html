@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Practice Quiz — Void Esports</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⬡</text></svg>">
+</head>
+<body>
+
+<div id="toast-container"></div>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="navbar__logo">
+    <div class="navbar__logo-mark">V</div>
+    VOID ESPORTS
+  </div>
+  <ul class="navbar__nav">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="training.html">Training</a></li>
+    <li><a href="quiz.html" class="active">Practice Quiz</a></li>
+    <li><a href="cert.html">Certification</a></li>
+    <li><a href="admin/index.html">Admin</a></li>
+  </ul>
+</nav>
+
+<!-- Start Screen -->
+<div id="screen-start" class="section" style="min-height:100vh;padding-top:100px">
+  <div class="container--narrow" style="text-align:center">
+    <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0">
+      <div style="position:absolute;top:20%;left:50%;transform:translateX(-50%);width:500px;height:400px;background:radial-gradient(ellipse,rgba(124,58,237,0.07) 0%,transparent 70%)"></div>
+    </div>
+    <div style="position:relative;z-index:1">
+      <span class="page-header__tag">🧠 Phase 02</span>
+      <h1 style="margin-bottom:16px">Practice <span style="background:linear-gradient(135deg,var(--void-cyan),var(--void-purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Quiz</span></h1>
+      <p style="font-size:1.05rem;color:var(--text-secondary);max-width:480px;margin:0 auto 40px">30 multiple-choice questions covering all training modules. Questions are randomized each session. Score <strong style="color:var(--void-cyan)">70% or higher</strong> to unlock the Certification Exam.</p>
+
+      <div class="grid-3" style="grid-template-columns:repeat(3,1fr);max-width:480px;margin:0 auto 40px;gap:16px">
+        <div class="card" style="text-align:center;padding:20px">
+          <div style="font-family:var(--font-display);font-size:2rem;font-weight:700;color:var(--void-cyan);line-height:1;margin-bottom:6px">30</div>
+          <div style="font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted)">Questions</div>
+        </div>
+        <div class="card" style="text-align:center;padding:20px">
+          <div style="font-family:var(--font-display);font-size:2rem;font-weight:700;color:#a78bfa;line-height:1;margin-bottom:6px">70%</div>
+          <div style="font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted)">Pass Mark</div>
+        </div>
+        <div class="card" style="text-align:center;padding:20px">
+          <div style="font-family:var(--font-display);font-size:2rem;font-weight:700;color:var(--void-green);line-height:1;margin-bottom:6px">∞</div>
+          <div style="font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted)">Attempts</div>
+        </div>
+      </div>
+
+      <div id="quiz-username-section" style="max-width:360px;margin:0 auto 28px">
+        <div class="form-group">
+          <label class="form-label" for="quiz-username">Your Name / Discord Username</label>
+          <input type="text" id="quiz-username" class="form-input" placeholder="e.g. NicksCold#0001" maxlength="64">
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn--primary btn--lg" onclick="startQuiz()">
+          <span>⚡</span> Start Quiz
+        </button>
+        <a href="training.html" class="btn btn--secondary">Review Training First</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Quiz Screen -->
+<div id="screen-quiz" class="hidden" style="padding-top:80px;min-height:100vh">
+  <div class="container--narrow" style="padding-top:32px">
+    <div class="quiz-header">
+      <div class="quiz-progress">
+        <div class="quiz-progress__label">
+          <span id="q-counter">Question 1 of 30</span>
+          <span id="q-score-live">Score: 0</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-bar__fill" id="quiz-progress-bar" style="width:0%"></div>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="badge badge--cyan" id="q-category">General</div>
+        <button class="btn btn--ghost btn--sm" onclick="confirmQuit()">✕ Quit</button>
+      </div>
+    </div>
+
+    <div class="question-card" id="question-card">
+      <div class="question-number" id="q-number">Question 01</div>
+      <p class="question-text" id="q-text"></p>
+      <ul class="options-list" id="options-list"></ul>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+      <div id="q-feedback" style="font-size:0.9rem"></div>
+      <button class="btn btn--primary" id="next-btn" onclick="nextQuestion()" disabled>
+        Next →
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Results Screen -->
+<div id="screen-results" class="hidden" style="padding-top:80px;min-height:100vh">
+  <div class="container--narrow" style="padding-top:48px;text-align:center">
+    <div class="card" style="padding:48px;max-width:520px;margin:0 auto">
+      <div id="results-icon" style="font-size:3rem;margin-bottom:24px">🎯</div>
+
+      <!-- SVG Ring -->
+      <div class="score-ring">
+        <svg viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="passGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#00e5ff"/>
+              <stop offset="100%" stop-color="#7c3aed"/>
+            </linearGradient>
+          </defs>
+          <circle class="score-ring__bg" cx="70" cy="70" r="62"/>
+          <circle class="score-ring__fill" id="score-ring-fill" cx="70" cy="70" r="62"
+            stroke-dasharray="389.6" stroke-dashoffset="389.6"/>
+        </svg>
+        <div class="score-ring__value">
+          <span class="score-ring__num" id="score-num">0%</span>
+          <span class="score-ring__label">Score</span>
+        </div>
+      </div>
+
+      <h2 id="results-title" style="margin-bottom:8px">Results</h2>
+      <p id="results-msg" style="margin-bottom:8px"></p>
+      <p id="results-sub" style="font-size:0.9rem;color:var(--text-muted);margin-bottom:32px"></p>
+
+      <div id="results-cta" style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap"></div>
+
+      <div style="margin-top:24px;padding-top:24px;border-top:1px solid var(--void-border)">
+        <div style="display:flex;justify-content:center;gap:32px">
+          <div>
+            <div style="font-family:var(--font-display);font-size:1.8rem;font-weight:700;color:var(--void-green);line-height:1" id="score-correct">0</div>
+            <div style="font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted)">Correct</div>
+          </div>
+          <div>
+            <div style="font-family:var(--font-display);font-size:1.8rem;font-weight:700;color:var(--void-red);line-height:1" id="score-wrong">0</div>
+            <div style="font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted)">Incorrect</div>
+          </div>
+          <div>
+            <div style="font-family:var(--font-display);font-size:1.8rem;font-weight:700;color:var(--void-cyan);line-height:1" id="score-total">30</div>
+            <div style="font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted)">Total</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Quit Confirmation Modal -->
+<div class="modal-overlay" id="quit-modal">
+  <div class="modal">
+    <h3 class="modal__title">Quit Quiz?</h3>
+    <p class="modal__body">Your progress will not be saved. Are you sure you want to quit this session?</p>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" data-close-modal>Continue Quiz</button>
+      <button class="btn btn--danger" onclick="quitQuiz()">Yes, Quit</button>
+    </div>
+  </div>
+</div>
+
+<!-- Supabase CDN -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="data/quiz-questions.js"></script>
+<script src="js/supabase.js"></script>
+<script src="js/utils.js"></script>
+<script>
+
+let questions = [];
+let currentIndex = 0;
+let score = 0;
+let answered = false;
+let username = '';
+
+function startQuiz() {
+  username = document.getElementById('quiz-username').value.trim();
+  if (!username) {
+    showToast('Please enter your name before starting.', 'error');
+    document.getElementById('quiz-username').focus();
+    return;
+  }
+  questions = shuffle([...QUIZ_QUESTIONS]);
+  currentIndex = 0;
+  score = 0;
+  answered = false;
+
+  document.getElementById('screen-start').classList.add('hidden');
+  document.getElementById('screen-quiz').classList.remove('hidden');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  if (currentIndex >= questions.length) { showResults(); return; }
+
+  const q = questions[currentIndex];
+  const total = questions.length;
+  answered = false;
+
+  document.getElementById('q-number').textContent = `Question ${String(currentIndex + 1).padStart(2, '0')}`;
+  document.getElementById('q-counter').textContent = `Question ${currentIndex + 1} of ${total}`;
+  document.getElementById('q-score-live').textContent = `Score: ${score}`;
+  document.getElementById('quiz-progress-bar').style.width = `${(currentIndex / total) * 100}%`;
+  document.getElementById('q-text').textContent = q.question;
+  document.getElementById('q-feedback').innerHTML = '';
+  document.getElementById('next-btn').disabled = true;
+
+  const keys = ['A', 'B', 'C', 'D'];
+  const optionsList = document.getElementById('options-list');
+  optionsList.innerHTML = '';
+
+  // Shuffle options
+  const indices = shuffle([0,1,2,3]);
+  const correctShuffled = indices.indexOf(q.correct);
+
+  indices.forEach((origIdx, newIdx) => {
+    const li = document.createElement('li');
+    li.className = 'option-item';
+    li.dataset.index = origIdx;
+    li.innerHTML = `
+      <span class="option-key">${keys[newIdx]}</span>
+      <span class="option-text">${q.options[origIdx]}</span>
+    `;
+    li.addEventListener('click', () => selectAnswer(li, origIdx, q.correct, optionsList));
+    optionsList.appendChild(li);
+  });
+
+  // Animate card
+  const card = document.getElementById('question-card');
+  card.style.opacity = '0';
+  card.style.transform = 'translateY(12px)';
+  requestAnimationFrame(() => {
+    card.style.transition = 'all 0.3s ease';
+    card.style.opacity = '1';
+    card.style.transform = 'translateY(0)';
+  });
+}
+
+function selectAnswer(li, selectedIdx, correctIdx, list) {
+  if (answered) return;
+  answered = true;
+
+  const items = list.querySelectorAll('.option-item');
+  items.forEach(item => {
+    const idx = parseInt(item.dataset.index);
+    if (idx === correctIdx) item.classList.add('correct');
+    else if (idx === selectedIdx) item.classList.add('incorrect');
+    item.style.pointerEvents = 'none';
+  });
+
+  if (selectedIdx === correctIdx) {
+    score++;
+    document.getElementById('q-feedback').innerHTML = `<span class="badge badge--green">✓ Correct!</span>`;
+  } else {
+    document.getElementById('q-feedback').innerHTML = `<span class="badge badge--red">✕ Incorrect</span>`;
+  }
+
+  document.getElementById('q-score-live').textContent = `Score: ${score}`;
+  document.getElementById('next-btn').disabled = false;
+}
+
+function nextQuestion() {
+  if (!answered) return;
+  currentIndex++;
+  renderQuestion();
+}
+
+async function showResults() {
+  document.getElementById('screen-quiz').classList.add('hidden');
+  document.getElementById('screen-results').classList.remove('hidden');
+
+  const total = questions.length;
+  const pct = Math.round((score / total) * 100);
+  const passed = pct >= 70;
+
+  // Animate ring
+  setTimeout(() => {
+    const circumference = 389.6;
+    const offset = circumference - (pct / 100) * circumference;
+    const fill = document.getElementById('score-ring-fill');
+    fill.classList.add(passed ? 'score-ring__fill--pass' : 'score-ring__fill--fail');
+    fill.style.strokeDashoffset = offset;
+  }, 200);
+
+  document.getElementById('score-num').textContent = `${pct}%`;
+  document.getElementById('score-num').style.color = passed ? 'var(--void-cyan)' : 'var(--void-red)';
+  document.getElementById('score-correct').textContent = score;
+  document.getElementById('score-wrong').textContent = total - score;
+  document.getElementById('score-total').textContent = total;
+
+  if (passed) {
+    document.getElementById('results-icon').textContent = '🎉';
+    document.getElementById('results-title').textContent = 'Quiz Passed!';
+    document.getElementById('results-title').style.color = 'var(--void-cyan)';
+    document.getElementById('results-msg').textContent = `Outstanding! You scored ${pct}% — Certification Exam unlocked.`;
+    document.getElementById('results-sub').textContent = 'You can now proceed to the final Certification Exam.';
+    document.getElementById('results-cta').innerHTML = `
+      <a href="cert.html" class="btn btn--primary">Take Certification Exam 🏆</a>
+      <button class="btn btn--secondary" onclick="retakeQuiz()">Retake Quiz</button>
+    `;
+    Progress.setQuizPassed(pct);
+  } else {
+    document.getElementById('results-icon').textContent = '📖';
+    document.getElementById('results-title').textContent = 'Keep Practicing';
+    document.getElementById('results-title').style.color = 'var(--void-amber)';
+    document.getElementById('results-msg').textContent = `You scored ${pct}% — you need 70% to unlock the exam.`;
+    document.getElementById('results-sub').textContent = 'Review the training material and try again.';
+    document.getElementById('results-cta').innerHTML = `
+      <button class="btn btn--primary" onclick="retakeQuiz()">⚡ Retry Quiz</button>
+      <a href="training.html" class="btn btn--secondary">Review Training</a>
+    `;
+  }
+
+  // Save to Supabase (non-blocking)
+  try {
+    await QuizDB.save(null, score, total, passed);
+    showToast('Results saved!', 'success', 2500);
+  } catch(e) {
+    // Supabase not configured yet — silently continue
+    console.warn('Supabase save skipped:', e.message);
+  }
+}
+
+function retakeQuiz() {
+  document.getElementById('screen-results').classList.add('hidden');
+  document.getElementById('screen-start').classList.remove('hidden');
+}
+
+function confirmQuit() { openModal('quit-modal'); }
+
+function quitQuiz() {
+  closeModal('quit-modal');
+  document.getElementById('screen-quiz').classList.add('hidden');
+  document.getElementById('screen-start').classList.remove('hidden');
+  score = 0;
+  currentIndex = 0;
+}
+
+</script>
+</body>
+</html>

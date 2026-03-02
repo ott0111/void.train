@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Certification Exam — Void Esports</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⬡</text></svg>">
+  <style>
+    .cert-textarea {
+      width: 100%;
+      background: var(--void-surface);
+      border: 1.5px solid var(--void-border);
+      border-radius: var(--radius);
+      padding: 16px;
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      line-height: 1.7;
+      min-height: 140px;
+      resize: vertical;
+      outline: none;
+      transition: var(--transition);
+    }
+    .cert-textarea:focus { border-color: var(--void-cyan); box-shadow: 0 0 0 3px rgba(0,229,255,0.08); }
+    .cert-textarea::selection { background: rgba(0,229,255,0.2); }
+
+    .keyword-pills { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+    .kpill {
+      padding: 3px 10px;
+      border-radius: 100px;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      letter-spacing: 0.06em;
+      border: 1px solid;
+      transition: var(--transition);
+    }
+    .kpill--hit { background: rgba(0,255,136,0.08); color: var(--void-green); border-color: rgba(0,255,136,0.3); }
+    .kpill--miss { background: rgba(255,255,255,0.03); color: var(--text-muted); border-color: var(--void-border); }
+
+    .warn-flash {
+      position: fixed;
+      inset: 0;
+      background: rgba(255,51,102,0.12);
+      z-index: 9998;
+      pointer-events: none;
+      animation: warnFlash 0.5s ease forwards;
+    }
+    @keyframes warnFlash {
+      0%   { opacity: 1; }
+      100% { opacity: 0; }
+    }
+
+    .anti-cheat-bar {
+      position: fixed;
+      top: 64px;
+      left: 0;
+      right: 0;
+      z-index: 500;
+      background: rgba(255,184,0,0.08);
+      border-bottom: 1px solid rgba(255,184,0,0.25);
+      padding: 8px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      color: var(--void-amber);
+    }
+
+    .cert-question { margin-bottom: 32px; }
+    .cert-question + .cert-question { padding-top: 32px; border-top: 1px solid var(--void-border); }
+  </style>
+</head>
+<body>
+
+<div id="toast-container"></div>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="navbar__logo">
+    <div class="navbar__logo-mark">V</div>
+    VOID ESPORTS
+  </div>
+  <ul class="navbar__nav">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="training.html">Training</a></li>
+    <li><a href="quiz.html">Practice Quiz</a></li>
+    <li><a href="cert.html" class="active">Certification</a></li>
+    <li><a href="admin/index.html">Admin</a></li>
+  </ul>
+</nav>
+
+<!-- Locked Screen -->
+<div id="screen-locked" class="section" style="min-height:100vh;padding-top:120px;text-align:center">
+  <div class="container--narrow">
+    <div style="font-size:3.5rem;margin-bottom:24px">🔒</div>
+    <h1 style="margin-bottom:16px">Exam <span style="color:var(--void-amber)">Locked</span></h1>
+    <p style="font-size:1.05rem;max-width:460px;margin:0 auto 32px">You must pass the Practice Quiz with a score of <strong style="color:var(--void-cyan)">70% or higher</strong> before accessing the Certification Exam.</p>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <a href="quiz.html" class="btn btn--primary btn--lg">⚡ Take Practice Quiz</a>
+      <a href="training.html" class="btn btn--secondary">Review Training</a>
+    </div>
+  </div>
+</div>
+
+<!-- Start Screen -->
+<div id="screen-start" class="hidden section" style="min-height:100vh;padding-top:100px">
+  <div class="container--narrow">
+    <div style="text-align:center;margin-bottom:40px">
+      <span class="page-header__tag">🏆 Phase 03 — Certification</span>
+      <h1 style="margin-bottom:16px">Certification <span style="background:linear-gradient(135deg,var(--void-cyan),var(--void-purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Exam</span></h1>
+      <p style="max-width:520px;margin:0 auto">20 scenario-based questions requiring written responses. Your answers are analyzed for key concepts and submitted to the admin team for review.</p>
+    </div>
+
+    <div class="grid-3" style="grid-template-columns:repeat(3,1fr);max-width:480px;margin:0 auto 32px;gap:16px">
+      <div class="card" style="text-align:center;padding:20px">
+        <div style="font-family:var(--font-display);font-size:2rem;font-weight:700;color:var(--void-cyan);line-height:1;margin-bottom:6px">20</div>
+        <div style="font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted)">Scenarios</div>
+      </div>
+      <div class="card" style="text-align:center;padding:20px">
+        <div style="font-family:var(--font-display);font-size:2rem;font-weight:700;color:var(--void-amber);line-height:1;margin-bottom:6px">KW</div>
+        <div style="font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted)">Keyword Scoring</div>
+      </div>
+      <div class="card" style="text-align:center;padding:20px">
+        <div style="font-family:var(--font-display);font-size:2rem;font-weight:700;color:var(--void-red);line-height:1;margin-bottom:6px">AC</div>
+        <div style="font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted)">Anti-Cheat</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-bottom:28px">
+      <div class="alert alert--warning" style="margin-bottom:0">
+        <span class="alert__icon">⚠️</span>
+        <div class="alert__body">
+          <div class="alert__title">Anti-Cheat Notice</div>
+          <p>Copy/paste and right-click are disabled during the exam. You will be warned if you attempt to leave or refresh the page. Suspicious activity is logged.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group" style="max-width:440px;margin:0 auto 24px">
+      <label class="form-label" for="cert-name">Full Name / Discord Username</label>
+      <input type="text" id="cert-name" class="form-input" placeholder="e.g. NicksCold#0001" maxlength="64">
+    </div>
+    <div class="form-group" style="max-width:440px;margin:0 auto 28px">
+      <label class="form-label" for="cert-discord-id">Discord User ID</label>
+      <input type="text" id="cert-discord-id" class="form-input" placeholder="e.g. 123456789012345678" maxlength="20" pattern="[0-9]+">
+      <div style="font-family:var(--font-mono);font-size:0.72rem;color:var(--text-muted);margin-top:6px">Enable Developer Mode → Right-click your name → Copy User ID</div>
+    </div>
+
+    <div style="text-align:center">
+      <button class="btn btn--primary btn--lg" onclick="beginExam()">
+        🏆 Begin Certification Exam
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Anti-cheat bar (visible during exam) -->
+<div class="anti-cheat-bar hidden" id="ac-bar">
+  <span>🛡️</span>
+  <span>ANTI-CHEAT ACTIVE — Copy/Paste Disabled — Do not refresh</span>
+  <span style="margin-left:auto;color:var(--text-muted)" id="ac-warn-count">Warnings: 0</span>
+</div>
+
+<!-- Exam Screen -->
+<div id="screen-exam" class="hidden" style="padding-top:120px;min-height:100vh">
+  <div class="container--narrow" style="padding-bottom:80px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;flex-wrap:wrap;gap:16px">
+      <div>
+        <h2 style="margin-bottom:4px">Certification Exam</h2>
+        <div style="font-family:var(--font-mono);font-size:0.72rem;color:var(--text-muted);letter-spacing:0.06em" id="exam-candidate-label"></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="badge badge--amber" id="exam-progress-badge">0 / 20</div>
+        <button class="btn btn--danger btn--sm" onclick="confirmSubmitExam()">Submit Exam</button>
+      </div>
+    </div>
+
+    <div class="progress-bar" style="margin-bottom:32px;height:6px">
+      <div class="progress-bar__fill" id="exam-progress-bar" style="width:0%"></div>
+    </div>
+
+    <div id="exam-questions"></div>
+
+    <div style="margin-top:40px;text-align:center">
+      <button class="btn btn--primary btn--lg" onclick="confirmSubmitExam()">
+        📤 Submit Exam for Review
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Results Screen -->
+<div id="screen-submitted" class="hidden section" style="min-height:100vh;padding-top:120px;text-align:center">
+  <div class="container--narrow">
+    <div style="font-size:3.5rem;margin-bottom:24px">📨</div>
+    <h1 style="margin-bottom:16px">Exam <span style="color:var(--void-green)">Submitted</span></h1>
+    <p style="max-width:480px;margin:0 auto 12px;font-size:1.05rem">Your certification exam has been submitted successfully.</p>
+    <p style="max-width:480px;margin:0 auto 32px;color:var(--text-muted)">The admin team will review your responses and update your application status. You will be contacted via Discord with the outcome.</p>
+    <div id="submitted-score-info" style="margin-bottom:32px;padding:20px;background:var(--void-card);border:1px solid var(--void-border);border-radius:var(--radius-lg);max-width:400px;margin-left:auto;margin-right:auto"></div>
+    <a href="index.html" class="btn btn--secondary">← Back to Home</a>
+  </div>
+</div>
+
+<!-- Submit Confirmation Modal -->
+<div class="modal-overlay" id="submit-modal">
+  <div class="modal">
+    <h3 class="modal__title">Submit Exam?</h3>
+    <p class="modal__body">Once submitted, you cannot edit your answers. Make sure you've answered all 20 questions to the best of your ability.</p>
+    <div id="unanswered-warning" class="hidden" style="margin-bottom:16px">
+      <div class="alert alert--warning">
+        <span class="alert__icon">⚠️</span>
+        <div class="alert__body"><p id="unanswered-text">Some questions are unanswered.</p></div>
+      </div>
+    </div>
+    <div class="modal__actions">
+      <button class="btn btn--ghost" data-close-modal>Keep Editing</button>
+      <button class="btn btn--primary" onclick="submitExam()">Submit Exam</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="data/cert-questions.js"></script>
+<script src="js/supabase.js"></script>
+<script src="js/utils.js"></script>
+<script>
+
+let candidateName = '';
+let candidateDiscordId = '';
+let warnCount = 0;
+let examActive = false;
+let textareas = {};
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+
+function init() {
+  if (Progress.certUnlocked()) {
+    document.getElementById('screen-locked').classList.add('hidden');
+    document.getElementById('screen-start').classList.remove('hidden');
+  }
+}
+
+init();
+
+// ── Anti-cheat ────────────────────────────────────────────────────────────────
+
+function flashWarn(msg) {
+  warnCount++;
+  document.getElementById('ac-warn-count').textContent = `Warnings: ${warnCount}`;
+  const el = document.createElement('div');
+  el.className = 'warn-flash';
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 600);
+  showToast(`⚠️ ${msg}`, 'warning', 4000);
+}
+
+document.addEventListener('copy',  e => { if (examActive) { e.preventDefault(); flashWarn('Copy is disabled during the exam.'); }});
+document.addEventListener('paste', e => { if (examActive) { e.preventDefault(); flashWarn('Paste is disabled during the exam.'); }});
+document.addEventListener('cut',   e => { if (examActive) { e.preventDefault(); flashWarn('Cut is disabled during the exam.'); }});
+document.addEventListener('contextmenu', e => { if (examActive) { e.preventDefault(); flashWarn('Right-click is disabled during the exam.'); }});
+
+window.addEventListener('beforeunload', e => {
+  if (examActive) {
+    e.preventDefault();
+    e.returnValue = 'Your exam answers will be lost if you leave. Are you sure?';
+    flashWarn('Attempting to leave the exam page.');
+  }
+});
+
+document.addEventListener('visibilitychange', () => {
+  if (examActive && document.hidden) {
+    flashWarn('Tab switch detected — stay on the exam page.');
+  }
+});
+
+// ── Build Exam ─────────────────────────────────────────────────────────────────
+
+function beginExam() {
+  candidateName = document.getElementById('cert-name').value.trim();
+  candidateDiscordId = document.getElementById('cert-discord-id').value.trim();
+
+  if (!candidateName) { showToast('Please enter your name.', 'error'); return; }
+  if (!candidateDiscordId || !/^\d{15,20}$/.test(candidateDiscordId)) {
+    showToast('Please enter a valid Discord User ID (numbers only, 15-20 digits).', 'error');
+    return;
+  }
+
+  document.getElementById('screen-start').classList.add('hidden');
+  document.getElementById('screen-exam').classList.remove('hidden');
+  document.getElementById('ac-bar').classList.remove('hidden');
+  document.getElementById('exam-candidate-label').textContent = `Candidate: ${candidateName} · ID: ${candidateDiscordId}`;
+
+  examActive = true;
+  renderExamQuestions();
+}
+
+function renderExamQuestions() {
+  const container = document.getElementById('exam-questions');
+  container.innerHTML = '';
+  textareas = {};
+
+  CERT_QUESTIONS.forEach((q, idx) => {
+    const div = document.createElement('div');
+    div.className = 'cert-question question-card';
+    div.innerHTML = `
+      <div class="question-number">Scenario ${String(idx + 1).padStart(2, '0')}</div>
+      <p class="question-text">${q.scenario}</p>
+      <div class="form-group" style="margin-bottom:8px">
+        <label class="form-label">Your Response</label>
+        <textarea class="cert-textarea" id="cert-ans-${q.id}" 
+          placeholder="Describe what you would do in this scenario. Be specific and thorough..."
+          oninput="onAnswerInput(${q.id}, this.value)"></textarea>
+      </div>
+      <div class="keyword-pills" id="kpills-${q.id}"></div>
+    `;
+    container.appendChild(div);
+    textareas[q.id] = '';
+  });
+
+  updateExamProgress();
+}
+
+function onAnswerInput(qId, value) {
+  textareas[qId] = value;
+  highlightKeywords(qId, value);
+  updateExamProgress();
+}
+
+function highlightKeywords(qId, value) {
+  const q = CERT_QUESTIONS.find(q => q.id === qId);
+  if (!q) return;
+  const lower = value.toLowerCase();
+  const container = document.getElementById(`kpills-${qId}`);
+  if (!container) return;
+  container.innerHTML = q.keywords.map(kw => {
+    const hit = lower.includes(kw.toLowerCase());
+    return `<span class="kpill ${hit ? 'kpill--hit' : 'kpill--miss'}">${kw}</span>`;
+  }).join('');
+}
+
+function updateExamProgress() {
+  const answered = Object.values(textareas).filter(v => v && v.trim().length >= 20).length;
+  document.getElementById('exam-progress-badge').textContent = `${answered} / 20`;
+  document.getElementById('exam-progress-bar').style.width = `${(answered / 20) * 100}%`;
+}
+
+// ── Scoring ───────────────────────────────────────────────────────────────────
+
+function scoreExam() {
+  let totalScore = 0;
+  let maxScore = 0;
+  const scores = {};
+
+  CERT_QUESTIONS.forEach(q => {
+    const answer = (textareas[q.id] || '').toLowerCase();
+    const hitKeywords = q.keywords.filter(kw => answer.includes(kw.toLowerCase()));
+    const questionScore = Math.round((hitKeywords.length / q.minKeywords) * 10);
+    const capped = Math.min(questionScore, 10);
+    scores[q.id] = { score: capped, hits: hitKeywords.length, required: q.minKeywords };
+    totalScore += capped;
+    maxScore += 10;
+  });
+
+  return { totalScore, maxScore, percentage: Math.round((totalScore / maxScore) * 100), scores };
+}
+
+// ── Submit ─────────────────────────────────────────────────────────────────────
+
+function confirmSubmitExam() {
+  const unanswered = CERT_QUESTIONS.filter(q => !textareas[q.id] || textareas[q.id].trim().length < 20);
+  const warn = document.getElementById('unanswered-warning');
+  if (unanswered.length > 0) {
+    warn.classList.remove('hidden');
+    document.getElementById('unanswered-text').textContent = `${unanswered.length} question(s) have no or very short responses.`;
+  } else {
+    warn.classList.add('hidden');
+  }
+  openModal('submit-modal');
+}
+
+async function submitExam() {
+  closeModal('submit-modal');
+
+  const { totalScore, maxScore, percentage, scores } = scoreExam();
+  const answersPayload = {};
+  CERT_QUESTIONS.forEach(q => {
+    answersPayload[`q${q.id}`] = textareas[q.id] || '';
+  });
+
+  examActive = false;
+  document.getElementById('ac-bar').classList.add('hidden');
+
+  // Show submitted screen
+  document.getElementById('screen-exam').classList.add('hidden');
+  document.getElementById('screen-submitted').classList.remove('hidden');
+
+  document.getElementById('submitted-score-info').innerHTML = `
+    <div style="display:flex;justify-content:center;gap:24px;text-align:center">
+      <div>
+        <div style="font-family:var(--font-display);font-size:1.8rem;font-weight:700;color:var(--void-cyan);line-height:1;margin-bottom:4px">${percentage}%</div>
+        <div style="font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted)">Keyword Score</div>
+      </div>
+      <div>
+        <div style="font-family:var(--font-display);font-size:1.8rem;font-weight:700;color:#a78bfa;line-height:1;margin-bottom:4px">${totalScore}/${maxScore}</div>
+        <div style="font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted)">Points</div>
+      </div>
+      <div>
+        <div style="font-family:var(--font-display);font-size:1.8rem;font-weight:700;color:var(--void-amber);line-height:1;margin-bottom:4px">${warnCount}</div>
+        <div style="font-family:var(--font-mono);font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-muted)">Warnings</div>
+      </div>
+    </div>
+  `;
+
+  // Save to Supabase
+  try {
+    await ApplicationDB.submit({
+      candidate_name: candidateName,
+      discord_id: candidateDiscordId,
+      score: totalScore,
+      max_score: maxScore,
+      percentage,
+      warn_count: warnCount,
+      answers: answersPayload,
+      score_breakdown: scores
+    });
+    showToast('Exam submitted successfully!', 'success');
+  } catch(e) {
+    console.error('Supabase submit error:', e);
+    showToast('Results saved locally. Admin notified.', 'info');
+  }
+}
+
+</script>
+</body>
+</html>

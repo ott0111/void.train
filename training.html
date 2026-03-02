@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Training Module — Void Esports</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⬡</text></svg>">
+</head>
+<body>
+
+<div id="toast-container"></div>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="navbar__logo">
+    <div class="navbar__logo-mark">V</div>
+    VOID ESPORTS
+  </div>
+  <ul class="navbar__nav">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="training.html" class="active">Training</a></li>
+    <li><a href="quiz.html">Practice Quiz</a></li>
+    <li><a href="cert.html">Certification</a></li>
+    <li><a href="admin/index.html">Admin</a></li>
+  </ul>
+</nav>
+
+<!-- Page Header -->
+<div class="page-header">
+  <div style="position:absolute;inset:0;overflow:hidden;z-index:0">
+    <div style="position:absolute;top:-40%;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(ellipse,rgba(0,229,255,0.08) 0%,transparent 70%);pointer-events:none"></div>
+  </div>
+  <div style="position:relative;z-index:1">
+    <span class="page-header__tag">📚 Phase 01 — Training</span>
+    <h1 class="page-header__title">Void Mod Training</h1>
+    <p class="page-header__desc">Comprehensive certification program for new Void Esports moderators. Master ticket handling, roster management, and community moderation through interactive scenarios and real-time testing.</p>
+    <p style="margin-top:12px;font-family:var(--font-mono);font-size:0.72rem;color:var(--text-muted);letter-spacing:0.08em">Made by Nicks Cold</p>
+    <div style="margin-top:24px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <a href="admin/index.html" class="btn btn--ghost btn--sm">Admin Login</a>
+      <a href="quiz.html" class="btn btn--primary">Continue to Practice Quiz →</a>
+    </div>
+  </div>
+</div>
+
+<div class="training-section">
+  <div class="container--narrow">
+
+    <!-- Section: Ticket Types -->
+    <div class="training-block">
+      <div class="training-block__header">
+        <div class="training-block__icon training-block__icon--cyan">🎫</div>
+        <div>
+          <div class="card__label">Module 01</div>
+          <h3 class="training-block__title">Ticket Types</h3>
+        </div>
+      </div>
+      <p>Your first and foremost responsibility as a mod is to efficiently manage the ticket system in Void Esports. We operate with two primary ticket categories, each requiring specific handling protocols.</p>
+
+      <div class="grid-2" style="margin-top:20px">
+        <div style="background:var(--void-surface);border:1px solid var(--void-border);border-radius:var(--radius);padding:20px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+            <span style="font-size:1.4rem">🎟️</span>
+            <h4 style="color:var(--void-cyan)">General Ticket</h4>
+          </div>
+          <p style="font-size:0.9rem">These are created by community members for support inquiries, moderator assistance, or reporting issues. Handle with professionalism and follow escalation procedures for complex matters.</p>
+        </div>
+        <div style="background:var(--void-surface);border:1px solid var(--void-border);border-radius:var(--radius);padding:20px">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
+            <span style="font-size:1.4rem">📋</span>
+            <h4 style="color:#a78bfa">Roster Ticket</h4>
+          </div>
+          <p style="font-size:0.9rem">Application channel for users seeking to join Void Esports. Initial response must include age verification and direction to appropriate resources. Follow structured onboarding workflow.</p>
+        </div>
+      </div>
+
+      <div class="alert alert--info" style="margin-top:20px">
+        <span class="alert__icon">📌</span>
+        <div class="alert__body">
+          <div class="alert__title">Protocol</div>
+          <p>All ticket responses should begin with a professional greeting and age inquiry. Direct new applicants to the appropriate channels and maintain detailed records of all interactions.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section: Roster Categories -->
+    <div class="training-block">
+      <div class="training-block__header">
+        <div class="training-block__icon training-block__icon--purple">🏆</div>
+        <div>
+          <div class="card__label">Module 02</div>
+          <h3 class="training-block__title">Roster Categories & Requirements</h3>
+        </div>
+      </div>
+      <p>Void Esports maintains distinct roster tiers. Each category has specific requirements that must be verified before approving an application.</p>
+
+      <div class="roster-grid">
+        <div class="roster-card">
+          <div class="roster-card__tier" style="color:var(--void-amber)">🥇 Pro</div>
+          <ul>
+            <li>Highest competitive tier</li>
+            <li>Proven tournament record</li>
+            <li>Age 16+ required</li>
+            <li>Portfolio / VODs required</li>
+          </ul>
+        </div>
+        <div class="roster-card">
+          <div class="roster-card__tier" style="color:#a78bfa">⚡ Semi-Pro</div>
+          <ul>
+            <li>Competitive experience</li>
+            <li>Below Pro level</li>
+            <li>Ranked record required</li>
+            <li>Age 15+ required</li>
+          </ul>
+        </div>
+        <div class="roster-card">
+          <div class="roster-card__tier" style="color:var(--void-cyan)">🎓 Academy</div>
+          <ul>
+            <li>Development pathway</li>
+            <li>Pro→Semi-Pro bridge</li>
+            <li>Coachable mindset</li>
+            <li>Age 14+ required</li>
+          </ul>
+        </div>
+        <div class="roster-card">
+          <div class="roster-card__tier" style="color:var(--void-magenta)">🎨 Creative</div>
+          <ul>
+            <li>Artistic/creative skills</li>
+            <li>Portfolio required</li>
+            <li>Community contributor</li>
+            <li>Any age considered</li>
+          </ul>
+        </div>
+        <div class="roster-card">
+          <div class="roster-card__tier" style="color:#f97316">📺 Streamer</div>
+          <ul>
+            <li>Platform & channel link</li>
+            <li>Average viewership</li>
+            <li>Regular stream schedule</li>
+            <li>Partnership potential</li>
+          </ul>
+        </div>
+        <div class="roster-card">
+          <div class="roster-card__tier" style="color:var(--void-green)">🎬 Content Creator</div>
+          <ul>
+            <li>YouTube / video content</li>
+            <li>Subscriber count</li>
+            <li>Content quality review</li>
+            <li>Upload consistency</li>
+          </ul>
+        </div>
+        <div class="roster-card">
+          <div class="roster-card__tier" style="color:var(--void-cyan-dim)">🌱 Junior CC</div>
+          <ul>
+            <li>Emerging creators</li>
+            <li>Lower threshold</li>
+            <li>Growth trajectory</li>
+            <li>Mentorship available</li>
+          </ul>
+        </div>
+        <div class="roster-card">
+          <div class="roster-card__tier" style="color:#e879f9">✏️ GFX/VFX</div>
+          <ul>
+            <li>Graphic design skills</li>
+            <li>Visual effects work</li>
+            <li>Portfolio mandatory</li>
+            <li>Software proficiency</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section: Mod Responsibilities & Commands -->
+    <div class="training-block">
+      <div class="training-block__header">
+        <div class="training-block__icon training-block__icon--green">⚙️</div>
+        <div>
+          <div class="card__label">Module 03</div>
+          <h3 class="training-block__title">Mod Responsibilities & Commands</h3>
+        </div>
+      </div>
+
+      <h4 style="color:var(--void-cyan);margin-bottom:12px;margin-top:4px">⚠️ Warn / Report</h4>
+      <p>Moderators are responsible for enforcing server rules. Use the warning system to document infractions officially.</p>
+      <ul class="training-list">
+        <li>Use <span class="command-chip">/warn @user [reason]</span> to issue an official warning on record</li>
+        <li>Always document the reason clearly — vague warnings are invalid</li>
+        <li>Three warnings typically escalate to a temporary mute or ban</li>
+        <li>Use <span class="command-chip">/report</span> to flag issues beyond your authority level</li>
+      </ul>
+
+      <div class="divider" style="margin:24px 0"></div>
+
+      <h4 style="color:#a78bfa;margin-bottom:12px">🏖️ LOA (Leave of Absence)</h4>
+      <p>All moderators must formally request time away. Unannounced inactivity is grounds for removal.</p>
+      <ul class="training-list">
+        <li>Submit your LOA request at least 24 hours in advance when possible</li>
+        <li>Notify your direct supervisor and arrange ticket coverage</li>
+        <li>Specify your return date clearly</li>
+        <li>Log your LOA in the appropriate channel using <span class="command-chip">/loa [dates] [reason]</span></li>
+      </ul>
+
+      <div class="divider" style="margin:24px 0"></div>
+
+      <h4 style="color:var(--void-green);margin-bottom:12px">🕐 Shift Management</h4>
+      <p>Shifts ensure 24/7 coverage of the ticket system. Adhering to your assigned shift is mandatory.</p>
+      <ul class="training-list">
+        <li>Log shift start with <span class="command-chip">/shift start</span> and end with <span class="command-chip">/shift end</span></li>
+        <li>Hand off any open tickets to the incoming moderator with detailed notes</li>
+        <li>Never abandon your shift without notifying a senior moderator</li>
+        <li>Consistent early exits or no-shows result in disciplinary review</li>
+      </ul>
+
+      <div class="divider" style="margin:24px 0"></div>
+
+      <h4 style="color:var(--void-amber);margin-bottom:12px">📊 Weekly Performance Metrics</h4>
+      <p>Every moderator submits a weekly performance report. This data drives staffing decisions and recognizes top performers.</p>
+      <ul class="training-list">
+        <li>Total tickets handled during the week</li>
+        <li>Average first-response time</li>
+        <li>Number of warnings/reports issued</li>
+        <li>LOA days taken</li>
+        <li>Shift completion percentage</li>
+        <li>Any notable escalations or incidents</li>
+      </ul>
+    </div>
+
+    <!-- Section: Ticket Handling Guidelines -->
+    <div class="training-block">
+      <div class="training-block__header">
+        <div class="training-block__icon training-block__icon--amber">📝</div>
+        <div>
+          <div class="card__label">Module 04</div>
+          <h3 class="training-block__title">Ticket Handling Guidelines</h3>
+        </div>
+      </div>
+
+      <h4 style="color:var(--void-cyan);margin-bottom:12px">👋 Professional Greeting</h4>
+      <ul class="training-list">
+        <li>Every ticket begins with a warm, professional greeting. Never be curt or dismissive.</li>
+        <li>Example: <em style="color:var(--text-secondary)">"Hello! Welcome to Void Esports support. My name is [Mod Name] and I'll be assisting you today."</em></li>
+        <li>Immediately follow with an age inquiry for Roster Tickets: <em style="color:var(--text-secondary)">"May I ask your age to ensure we direct you correctly?"</em></li>
+      </ul>
+
+      <div class="divider" style="margin:24px 0"></div>
+
+      <h4 style="color:#a78bfa;margin-bottom:12px">🎭 Role Inquiry & Age Verification</h4>
+      <ul class="training-list">
+        <li>After greeting, identify the role/category the user is applying for or seeking help with</li>
+        <li>Verify age before proceeding with any roster application</li>
+        <li>Age verification protects the organization and the user</li>
+        <li>Never process an application for someone who is underage for that tier</li>
+      </ul>
+
+      <div class="divider" style="margin:24px 0"></div>
+
+      <h4 style="color:var(--void-green);margin-bottom:12px">⭐ Grinder+ Instructions</h4>
+      <ul class="training-list">
+        <li>Grinder+ members receive prioritized handling — acknowledge their status in your response</li>
+        <li>Flag the ticket as priority in your tracking notes</li>
+        <li>Escalate Grinder+ applications faster than standard applications</li>
+      </ul>
+
+      <div class="divider" style="margin:24px 0"></div>
+
+      <h4 style="color:var(--void-red);margin-bottom:12px">🚫 Blacklist Format</h4>
+      <div style="background:var(--void-surface);border:1px solid rgba(255,51,102,0.2);border-radius:var(--radius);padding:16px;font-family:var(--font-mono);font-size:0.85rem;color:var(--text-secondary);margin-bottom:16px;line-height:1.8">
+        Username: ExampleUser#1234<br>
+        Discord ID: 123456789012345678<br>
+        Reason: [Specific violation details]<br>
+        Date: YYYY-MM-DD<br>
+        Issued By: [Your name / ID]
+      </div>
+      <ul class="training-list">
+        <li>All five fields are mandatory — incomplete blacklists are rejected</li>
+        <li>Never blacklist based on personal feelings — documented violations only</li>
+        <li>Submit to the designated blacklist channel after adding to the tracker</li>
+      </ul>
+
+      <div class="divider" style="margin:24px 0"></div>
+
+      <h4 style="color:var(--void-cyan);margin-bottom:12px">✅ Closing Script</h4>
+      <ul class="training-list">
+        <li>Always close with a thank-you and confirmation that the issue was resolved</li>
+        <li>Example: <em style="color:var(--text-secondary)">"Thank you for reaching out to Void Esports. Is there anything else I can help you with today? If not, I'll go ahead and close this ticket."</em></li>
+        <li>After confirmation or no response within 24h, close the ticket with a note</li>
+        <li>Mark tickets appropriately: Resolved / Escalated / Pending / Denied</li>
+      </ul>
+    </div>
+
+    <!-- Final Phase -->
+    <div class="training-block" style="border-color:rgba(0,229,255,0.25);background:linear-gradient(135deg,rgba(0,229,255,0.03),rgba(124,58,237,0.03))">
+      <div class="training-block__header">
+        <div class="training-block__icon" style="background:linear-gradient(135deg,rgba(0,229,255,0.15),rgba(124,58,237,0.15));border-color:rgba(0,229,255,0.3)">🚀</div>
+        <div>
+          <div class="card__label">Interactive Training Phase</div>
+          <h3 class="training-block__title">You're Ready for Testing</h3>
+        </div>
+      </div>
+      <p>Congratulations on completing the Void Esports moderator training content. You've covered the complete ticket handling protocol, all roster categories and requirements, moderator commands, shift and LOA management, and professional communication standards.</p>
+      <p style="margin-top:12px">The next phase tests your knowledge through 30 randomized multiple-choice questions. You must score 70% or higher to unlock the Certification Exam — where 20 real-world scenarios will determine whether you're ready to moderate for Void Esports.</p>
+      <div style="margin-top:24px;display:flex;gap:12px;flex-wrap:wrap">
+        <a href="quiz.html" class="btn btn--primary">Start Practice Quiz →</a>
+        <a href="index.html" class="btn btn--secondary">← Back to Home</a>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="footer__brand">⬡ VOID ESPORTS</div>
+  <div class="footer__meta">Moderator Training & Certification Platform &nbsp;·&nbsp; Made by Nicks Cold</div>
+</footer>
+
+<script src="js/utils.js"></script>
+</body>
+</html>
