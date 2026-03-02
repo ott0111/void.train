@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — Void Esports</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⬡</text></svg>">
+  <style>
+    .app-row td:first-child { font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted); }
+    .app-details {
+      display: none;
+      padding: 24px;
+      background: var(--void-surface);
+      border-top: 1px solid var(--void-border);
+      border-radius: 0 0 var(--radius) var(--radius);
+    }
+    .app-details.open { display: block; }
+    .app-answer-block {
+      margin-bottom: 16px;
+      padding: 14px 16px;
+      background: var(--void-card);
+      border: 1px solid var(--void-border);
+      border-radius: var(--radius);
+    }
+    .app-answer-block p { font-size: 0.88rem; color: var(--text-secondary); margin-top: 6px; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+
+<div id="toast-container"></div>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loading">
+  <div class="spinner"></div>
+  <div class="loading-text">Initializing</div>
+</div>
+
+<!-- Login Screen -->
+<div id="screen-login" class="hidden flex-center" style="min-height:100vh;padding:24px">
+  <div style="width:100%;max-width:400px">
+    <div style="text-align:center;margin-bottom:40px">
+      <div style="width:56px;height:56px;background:linear-gradient(135deg,var(--void-cyan),var(--void-purple));clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);font-size:1.2rem;font-weight:900;color:#fff;margin:0 auto 16px"></div>
+      <h2 style="margin-bottom:8px">Admin Login</h2>
+      <p style="font-size:0.9rem">Void Esports Staff Portal</p>
+    </div>
+    <div class="card">
+      <div class="form-group">
+        <label class="form-label" for="login-email">Email Address</label>
+        <input type="email" id="login-email" class="form-input" placeholder="admin@voidesports.gg">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="login-password">Password</label>
+        <input type="password" id="login-password" class="form-input" placeholder="••••••••••">
+      </div>
+      <div id="login-error" class="hidden" style="margin-bottom:16px">
+        <div class="alert alert--error"><span class="alert__icon">✕</span><div class="alert__body"><p id="login-error-text"></p></div></div>
+      </div>
+      <button class="btn btn--primary btn--full" onclick="doLogin()" id="login-btn">Sign In →</button>
+      <div style="margin-top:20px;text-align:center">
+        <a href="../index.html" style="font-family:var(--font-mono);font-size:0.72rem;color:var(--text-muted);letter-spacing:0.08em">← Back to Training Platform</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Admin Dashboard -->
+<div id="screen-dashboard" class="hidden admin-layout">
+
+  <!-- Sidebar -->
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar__logo">
+      <span>⬡</span>
+      <div>
+        Void <span class="admin-sidebar__logo-badge">Admin</span>
+      </div>
+    </div>
+
+    <nav class="admin-nav">
+      <div class="admin-nav__section-label">Overview</div>
+      <a href="#" onclick="showTab('tab-overview')" id="nav-overview" class="active">
+        <span class="nav-icon">📊</span> Dashboard
+      </a>
+
+      <div class="admin-nav__section-label">Applications</div>
+      <a href="#" onclick="showTab('tab-applications')" id="nav-applications">
+        <span class="nav-icon">📋</span> All Applications
+      </a>
+      <a href="#" onclick="showTab('tab-pending')" id="nav-pending">
+        <span class="nav-icon">🕐</span> Pending Review
+        <span id="pending-count-badge" class="badge badge--amber" style="margin-left:auto;font-size:0.6rem;padding:2px 8px">0</span>
+      </a>
+
+      <div class="admin-nav__section-label">Reports</div>
+      <a href="#" onclick="showTab('tab-quiz-results')" id="nav-quiz-results">
+        <span class="nav-icon">🧠</span> Quiz Results
+      </a>
+
+      <div style="flex:1"></div>
+    </nav>
+
+    <div style="padding:16px 12px;border-top:1px solid var(--void-border)">
+      <div style="font-family:var(--font-mono);font-size:0.7rem;color:var(--text-muted);letter-spacing:0.06em;margin-bottom:8px;padding-left:12px" id="admin-user-label">Logged in</div>
+      <button class="btn btn--ghost btn--sm btn--full" onclick="doLogout()">Sign Out</button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="admin-main">
+    <div class="admin-topbar">
+      <div class="admin-topbar__title" id="page-title">Dashboard</div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <div class="badge badge--cyan" id="topbar-date"></div>
+        <button class="btn btn--ghost btn--sm" onclick="refreshData()">↻ Refresh</button>
+      </div>
+    </div>
+
+    <div class="admin-content">
+
+      <!-- ── Overview Tab ── -->
+      <div id="tab-overview">
+        <div class="grid-3" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr));margin-bottom:32px">
+          <div class="stat-card">
+            <div class="stat-card__icon" style="background:rgba(0,229,255,0.1);border:1px solid rgba(0,229,255,0.2)">📋</div>
+            <div>
+              <div class="stat-card__value text-cyan" id="stat-total-apps">—</div>
+              <div class="stat-card__label">Total Applications</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__icon" style="background:rgba(255,184,0,0.1);border:1px solid rgba(255,184,0,0.2)">🕐</div>
+            <div>
+              <div class="stat-card__value text-amber" id="stat-pending">—</div>
+              <div class="stat-card__label">Pending Review</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__icon" style="background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.2)">✅</div>
+            <div>
+              <div class="stat-card__value text-green" id="stat-approved">—</div>
+              <div class="stat-card__label">Approved</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__icon" style="background:rgba(255,51,102,0.1);border:1px solid rgba(255,51,102,0.2)">✕</div>
+            <div>
+              <div class="stat-card__value text-red" id="stat-denied">—</div>
+              <div class="stat-card__label">Denied</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__icon" style="background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.2)">🧠</div>
+            <div>
+              <div class="stat-card__value text-purple" id="stat-quizzes">—</div>
+              <div class="stat-card__label">Quizzes Taken</div>
+            </div>
+          </div>
+        </div>
+
+        <h3 style="margin-bottom:16px">Recent Applications</h3>
+        <div id="recent-apps-container">
+          <div class="card" style="text-align:center;padding:48px">
+            <div class="spinner"></div>
+            <div class="loading-text" style="margin-top:16px">Loading...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── All Applications Tab ── -->
+      <div id="tab-applications" class="hidden">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px">
+          <h3>All Applications</h3>
+          <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+            <input type="text" id="apps-search" class="form-input" placeholder="Search by name or ID..." style="width:220px" oninput="filterApps()">
+            <select id="apps-filter" class="form-select" style="width:140px" onchange="filterApps()">
+              <option value="">All Status</option>
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="denied">Denied</option>
+            </select>
+          </div>
+        </div>
+        <div id="apps-table-container"></div>
+      </div>
+
+      <!-- ── Pending Tab ── -->
+      <div id="tab-pending" class="hidden">
+        <h3 style="margin-bottom:20px">Pending Applications</h3>
+        <div id="pending-container"></div>
+      </div>
+
+      <!-- ── Quiz Results Tab ── -->
+      <div id="tab-quiz-results" class="hidden">
+        <h3 style="margin-bottom:20px">Practice Quiz Results</h3>
+        <div id="quiz-results-container"></div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- Application Detail Modal -->
+<div class="modal-overlay" id="app-modal">
+  <div class="modal" style="max-width:720px;max-height:85vh;overflow-y:auto">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px">
+      <div>
+        <h3 class="modal__title" id="modal-app-name">Application</h3>
+        <div id="modal-app-meta" style="font-family:var(--font-mono);font-size:0.72rem;color:var(--text-muted);letter-spacing:0.06em"></div>
+      </div>
+      <button class="btn btn--ghost btn--sm" data-close-modal>✕</button>
+    </div>
+    <div id="modal-app-body"></div>
+    <div style="padding-top:20px;border-top:1px solid var(--void-border);margin-top:20px">
+      <div class="form-group">
+        <label class="form-label">Review Notes</label>
+        <textarea class="form-textarea" id="modal-notes" placeholder="Optional notes for this applicant..."></textarea>
+      </div>
+      <div style="display:flex;gap:12px;justify-content:flex-end">
+        <button class="btn btn--danger" id="modal-deny-btn" onclick="reviewApp('denied')">✕ Deny</button>
+        <button class="btn btn--success" id="modal-approve-btn" onclick="reviewApp('approved')">✓ Approve</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="../js/supabase.js"></script>
+<script src="../js/utils.js"></script>
+<script>
+
+let allApplications = [];
+let allQuizResults = [];
+let currentAppId = null;
+let currentAdminUser = null;
+
+// ── Boot ───────────────────────────────────────────────────────────────────────
+
+async function boot() {
+  document.getElementById('topbar-date').textContent = new Date().toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+
+  try {
+    const session = await Auth.getSession();
+    document.getElementById('loading').style.display = 'none';
+    if (session) {
+      currentAdminUser = session.user;
+      showDashboard();
+    } else {
+      document.getElementById('screen-login').classList.remove('hidden');
+    }
+  } catch(e) {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('screen-login').classList.remove('hidden');
+  }
+}
+
+boot();
+
+// ── Auth ───────────────────────────────────────────────────────────────────────
+
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  const btn = document.getElementById('login-btn');
+
+  if (!email || !password) { showLoginError('Please enter your email and password.'); return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Signing in...';
+
+  try {
+    const { data, error } = await Auth.signIn(email, password);
+    if (error) { showLoginError(error.message); btn.disabled = false; btn.textContent = 'Sign In →'; return; }
+    currentAdminUser = data.user;
+    document.getElementById('screen-login').classList.add('hidden');
+    showDashboard();
+  } catch(e) {
+    showLoginError('Authentication failed. Check your Supabase configuration.');
+    btn.disabled = false;
+    btn.textContent = 'Sign In →';
+  }
+}
+
+function showLoginError(msg) {
+  document.getElementById('login-error').classList.remove('hidden');
+  document.getElementById('login-error-text').textContent = msg;
+}
+
+async function doLogout() {
+  await Auth.signOut();
+  location.reload();
+}
+
+document.getElementById('login-password')?.addEventListener('keydown', e => {
+  if (e.key === 'Enter') doLogin();
+});
+
+// ── Dashboard ──────────────────────────────────────────────────────────────────
+
+async function showDashboard() {
+  document.getElementById('screen-dashboard').classList.remove('hidden');
+  if (currentAdminUser) {
+    document.getElementById('admin-user-label').textContent = currentAdminUser.email;
+  }
+  await refreshData();
+}
+
+async function refreshData() {
+  try {
+    const [appsRes, quizRes, stats] = await Promise.all([
+      ApplicationDB.getAll(),
+      QuizDB.getAll(),
+      StatsDB.getCounts()
+    ]);
+
+    allApplications = appsRes.data || [];
+    allQuizResults  = quizRes.data  || [];
+
+    // Stats
+    document.getElementById('stat-total-apps').textContent = stats.totalApps;
+    document.getElementById('stat-pending').textContent    = stats.pending;
+    document.getElementById('stat-approved').textContent   = stats.approved;
+    document.getElementById('stat-denied').textContent     = stats.denied;
+    document.getElementById('stat-quizzes').textContent    = stats.quizzesTaken;
+    document.getElementById('pending-count-badge').textContent = stats.pending;
+
+    renderRecentApps();
+    renderAppsTable(allApplications);
+    renderPending();
+    renderQuizResults();
+  } catch(e) {
+    showToast('Error loading data. Check Supabase config.', 'error');
+    console.error(e);
+    // Show demo message in containers
+    ['recent-apps-container','apps-table-container','pending-container','quiz-results-container'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.innerHTML = `<div class="alert alert--warning"><span class="alert__icon">⚠️</span><div class="alert__body"><div class="alert__title">Supabase Not Configured</div><p>Update js/supabase.js with your SUPABASE_URL and SUPABASE_ANON key.</p></div></div>`;
+    });
+    ['stat-total-apps','stat-pending','stat-approved','stat-denied','stat-quizzes'].forEach(id => {
+      document.getElementById(id).textContent = '?';
+    });
+  }
+}
+
+// ── Tab Navigation ─────────────────────────────────────────────────────────────
+
+function showTab(id) {
+  const tabs = ['tab-overview','tab-applications','tab-pending','tab-quiz-results'];
+  const navMap = { 'tab-overview':'nav-overview','tab-applications':'nav-applications','tab-pending':'nav-pending','tab-quiz-results':'nav-quiz-results' };
+  const titles = { 'tab-overview':'Dashboard','tab-applications':'All Applications','tab-pending':'Pending Review','tab-quiz-results':'Quiz Results' };
+
+  tabs.forEach(t => document.getElementById(t).classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
+
+  Object.values(navMap).forEach(n => document.getElementById(n).classList.remove('active'));
+  document.getElementById(navMap[id])?.classList.add('active');
+
+  document.getElementById('page-title').textContent = titles[id] || 'Admin';
+}
+
+// ── Render Functions ───────────────────────────────────────────────────────────
+
+function statusBadge(status) {
+  const map = {
+    pending:  '<span class="badge badge--amber">⏳ Pending</span>',
+    approved: '<span class="badge badge--green">✓ Approved</span>',
+    denied:   '<span class="badge badge--red">✕ Denied</span>'
+  };
+  return map[status] || `<span class="badge">${status}</span>`;
+}
+
+function renderRecentApps() {
+  const recent = allApplications.slice(0, 5);
+  const c = document.getElementById('recent-apps-container');
+  if (!recent.length) {
+    c.innerHTML = `<div class="card" style="text-align:center;padding:40px;color:var(--text-muted)">No applications yet.</div>`;
+    return;
+  }
+  c.innerHTML = appsTableHTML(recent);
+}
+
+function renderAppsTable(apps) {
+  const c = document.getElementById('apps-table-container');
+  if (!apps.length) {
+    c.innerHTML = `<div class="card" style="text-align:center;padding:40px;color:var(--text-muted)">No applications found.</div>`;
+    return;
+  }
+  c.innerHTML = appsTableHTML(apps);
+}
+
+function appsTableHTML(apps) {
+  const rows = apps.map(a => `
+    <tr class="app-row" style="cursor:pointer" onclick="openAppModal('${a.id}')">
+      <td>${a.id?.substring(0,8) || '—'}</td>
+      <td><strong style="color:var(--text-primary)">${escHtml(a.candidate_name || '—')}</strong></td>
+      <td>${escHtml(a.discord_id || '—')}</td>
+      <td><strong style="color:var(--void-cyan)">${a.percentage || 0}%</strong></td>
+      <td>${statusBadge(a.status)}</td>
+      <td style="color:var(--text-muted);font-size:0.82rem">${fmtDate(a.submitted_at)}</td>
+      <td>
+        <div style="display:flex;gap:6px" onclick="event.stopPropagation()">
+          <button class="btn btn--success btn--sm" onclick="quickAction('${a.id}','approved')">✓</button>
+          <button class="btn btn--danger btn--sm" onclick="quickAction('${a.id}','denied')">✕</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+
+  return `
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Candidate</th>
+            <th>Discord ID</th>
+            <th>Score</th>
+            <th>Status</th>
+            <th>Submitted</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+  `;
+}
+
+function renderPending() {
+  const pending = allApplications.filter(a => a.status === 'pending');
+  const c = document.getElementById('pending-container');
+  if (!pending.length) {
+    c.innerHTML = `<div class="card" style="text-align:center;padding:40px">
+      <div style="font-size:2rem;margin-bottom:12px">✅</div>
+      <p style="color:var(--void-green)">No pending applications — you're all caught up!</p>
+    </div>`;
+    return;
+  }
+  c.innerHTML = appsTableHTML(pending);
+}
+
+function renderQuizResults() {
+  const c = document.getElementById('quiz-results-container');
+  if (!allQuizResults.length) {
+    c.innerHTML = `<div class="card" style="text-align:center;padding:40px;color:var(--text-muted)">No quiz results yet.</div>`;
+    return;
+  }
+  const rows = allQuizResults.slice(0, 50).map(r => `
+    <tr>
+      <td>${r.id?.substring(0,8) || '—'}</td>
+      <td><strong style="color:var(--void-cyan)">${r.percentage || 0}%</strong></td>
+      <td>${r.score}/${r.total}</td>
+      <td>${r.passed ? '<span class="badge badge--green">Passed</span>' : '<span class="badge badge--red">Failed</span>'}</td>
+      <td style="color:var(--text-muted);font-size:0.82rem">${fmtDate(r.taken_at)}</td>
+    </tr>
+  `).join('');
+
+  c.innerHTML = `
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>ID</th><th>Score</th><th>Points</th><th>Result</th><th>Date</th></tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+  `;
+}
+
+// ── App Modal ──────────────────────────────────────────────────────────────────
+
+function openAppModal(id) {
+  const app = allApplications.find(a => a.id === id);
+  if (!app) return;
+  currentAppId = id;
+
+  document.getElementById('modal-app-name').textContent = app.candidate_name || 'Unknown';
+  document.getElementById('modal-app-meta').textContent = `Discord ID: ${app.discord_id || '—'} · Submitted: ${fmtDate(app.submitted_at)} · Status: ${app.status}`;
+  document.getElementById('modal-notes').value = app.review_notes || '';
+
+  const scoreInfo = `
+    <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:20px">
+      <div class="badge badge--cyan">Score: ${app.percentage || 0}%</div>
+      <div class="badge badge--amber">Warnings: ${app.warn_count || 0}</div>
+      ${statusBadge(app.status)}
+    </div>
+  `;
+
+  let answersHTML = '';
+  if (app.answers) {
+    try {
+      const answers = typeof app.answers === 'string' ? JSON.parse(app.answers) : app.answers;
+      const CERT_QUESTIONS_PARTIAL = Array.from({length:20}, (_,i) => `q${i+1}`);
+      CERT_QUESTIONS_PARTIAL.forEach((key, idx) => {
+        const ans = answers[key] || '(No response)';
+        answersHTML += `
+          <div class="app-answer-block">
+            <div style="font-family:var(--font-mono);font-size:0.72rem;color:var(--void-cyan);letter-spacing:0.08em;margin-bottom:6px">SCENARIO ${idx + 1}</div>
+            <p>${escHtml(ans)}</p>
+          </div>
+        `;
+      });
+    } catch(e) {
+      answersHTML = '<p style="color:var(--text-muted)">Could not parse answers.</p>';
+    }
+  }
+
+  document.getElementById('modal-app-body').innerHTML = scoreInfo + `<div style="max-height:320px;overflow-y:auto">${answersHTML || '<p style="color:var(--text-muted)">No answers on record.</p>'}</div>`;
+
+  const approved = app.status === 'approved';
+  const denied   = app.status === 'denied';
+  document.getElementById('modal-approve-btn').disabled = approved;
+  document.getElementById('modal-deny-btn').disabled    = denied;
+
+  openModal('app-modal');
+}
+
+async function reviewApp(newStatus) {
+  if (!currentAppId) return;
+  const notes = document.getElementById('modal-notes').value.trim();
+
+  try {
+    await ApplicationDB.updateStatus(currentAppId, newStatus, currentAdminUser?.email || 'admin', notes);
+    showToast(`Application ${newStatus}!`, newStatus === 'approved' ? 'success' : 'error');
+    closeModal('app-modal');
+    await refreshData();
+  } catch(e) {
+    showToast('Update failed: ' + e.message, 'error');
+  }
+}
+
+async function quickAction(id, status) {
+  try {
+    await ApplicationDB.updateStatus(id, status, currentAdminUser?.email || 'admin', '');
+    showToast(`Application ${status}!`, status === 'approved' ? 'success' : 'error');
+    await refreshData();
+  } catch(e) {
+    showToast('Update failed: ' + e.message, 'error');
+  }
+}
+
+// ── Filter ─────────────────────────────────────────────────────────────────────
+
+function filterApps() {
+  const query  = document.getElementById('apps-search').value.toLowerCase();
+  const status = document.getElementById('apps-filter').value;
+  const filtered = allApplications.filter(a => {
+    const matchText = !query ||
+      (a.candidate_name || '').toLowerCase().includes(query) ||
+      (a.discord_id || '').toLowerCase().includes(query);
+    const matchStatus = !status || a.status === status;
+    return matchText && matchStatus;
+  });
+  renderAppsTable(filtered);
+}
+
+// ── Utils ──────────────────────────────────────────────────────────────────────
+
+function escHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+</script>
+</body>
+</html>
